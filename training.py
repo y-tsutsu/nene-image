@@ -7,6 +7,7 @@ from chainer import training
 from chainer import serializers
 from chainer.datasets import tuple_dataset
 from chainer.training import extensions
+import os
 import os.path
 import numpy as np
 import skimage.io
@@ -19,7 +20,7 @@ def load_data(dirname, filename):
         lines = f.readlines()
 
     IMAGE_SIZE = 28
-    IN_CHANNELS = 1
+    IN_CHANNELS = 3
     count = len(lines)
     xs = np.zeros((count, IN_CHANNELS, IMAGE_SIZE,
                    IMAGE_SIZE)).astype(np.float32)
@@ -28,11 +29,13 @@ def load_data(dirname, filename):
     for i, line in enumerate(lines):
         png, label = line.split()
         img = skimage.io.imread(os.path.join(dirname, 'image', png))
-        img = skimage.color.rgb2gray(img)
+        if img.shape[2] == 4:
+            img = skimage.color.rgba2rgb(img)
         height, width = img.shape[:2]
-        img = rescale(img, (IMAGE_SIZE / height, IMAGE_SIZE / width), mode='constant')
-        im = img.astype(np.float32).reshape(1, IMAGE_SIZE, IMAGE_SIZE)
-        xs[i, :, :, :] = im
+        img = rescale(img, (IMAGE_SIZE / height,
+                            IMAGE_SIZE / width), mode='constant')
+        im = img.astype(np.float32).reshape(1, IMAGE_SIZE, IMAGE_SIZE, 3)
+        xs[i, :, :, :] = im.transpose(0, 3, 1, 2)
         ys[i] = label
 
     return tuple_dataset.TupleDataset(xs, ys)
@@ -60,8 +63,11 @@ def main():
 
     trainer.run()
 
-    serializers.save_npz('./model/model.npz', model)
-    serializers.save_npz('./model/optimizer.npz', optimizer)
+    modeldir = './model'
+    if not os.path.isdir(modeldir):
+        os.mkdir(modeldir)
+    serializers.save_npz(os.path.join(modeldir, 'model.npz'), model)
+    serializers.save_npz(os.path.join(modeldir, 'optimizer.npz'), optimizer)
 
 
 if __name__ == '__main__':

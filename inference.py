@@ -17,28 +17,30 @@ def inference(img):
     model = L.Classifier(CNN())
     serializers.load_npz('./model/model.npz', model)
 
-    img = skimage.color.rgb2gray(img)
+    if img.shape[2] == 4:
+        img = skimage.color.rgba2rgb(img)
     height, width = img.shape[:2]
     IMAGE_SIZE = 28
     img = rescale(img, (IMAGE_SIZE / height,
                         IMAGE_SIZE / width), mode='constant')
-    im = img.astype(np.float32).reshape(1, 1, IMAGE_SIZE, IMAGE_SIZE)
+    im = img.astype(np.float32).reshape(1, IMAGE_SIZE, IMAGE_SIZE, 3)
+    im = im.transpose(0, 3, 1, 2)
     x = Variable(im)
     y = model.predictor(x)
     [pred] = y.data
     recog = np.argmax(pred)
-    return recog, im.reshape(IMAGE_SIZE, IMAGE_SIZE)
+    return recog, im.reshape(3, IMAGE_SIZE, IMAGE_SIZE).transpose(1, 2, 0)
 
 
 def main():
     labels = string.digits + string.ascii_uppercase
     for i, label in enumerate(labels):
         img = skimage.io.imread(os.path.join('./sample', '{}.png'.format(i)))
-        recog, img_gray = inference(img)
+        recog, img = inference(img)
         plt.subplot(4, 10, i + 1)
         plt.title(labels[recog], size=12, color='k' if i == recog else 'r')
         plt.axis([0, 28, 28, 0])
-        plt.imshow(img_gray, cmap='gray')
+        plt.imshow(img)
         plt.tick_params(labelbottom='off')
         plt.tick_params(labelleft='off')
     plt.show()
