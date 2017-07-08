@@ -32,6 +32,7 @@ _ReSharper*/
 packages/
 env/
 data/
+sample/
 result/
 __pycache__/
 .vscode/

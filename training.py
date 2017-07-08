@@ -60,8 +60,8 @@ def main():
 
     trainer.run()
 
-    serializers.save_npz('model.npz', model)
-    serializers.save_npz('optimizer.npz', optimizer)
+    serializers.save_npz('./model/model.npz', model)
+    serializers.save_npz('./model/optimizer.npz', optimizer)
 
 
 if __name__ == '__main__':
