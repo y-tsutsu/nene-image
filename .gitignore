@@ -36,4 +36,4 @@ sample/
 result/
 __pycache__/
 .vscode/
-*npz
+*.npz
