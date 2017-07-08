@@ -10,7 +10,7 @@ class CNN(chainer.Chain):
         super(CNN, self).__init__(
             conv1=L.Convolution2D(3, 32, 5),
             conv2=L.Convolution2D(32, 64, 5),
-            l1=L.Linear(1024, CNN.CLASSES)
+            l1=L.Linear(5184, CNN.CLASSES)
         )
         self.train = train
 

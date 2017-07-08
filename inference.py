@@ -13,6 +13,9 @@ import matplotlib.pyplot as plt
 import seaborn
 
 
+IMAGE_SIZE = 48
+
+
 def inference(img):
     model = L.Classifier(CNN())
     serializers.load_npz('./model/model.npz', model)
@@ -20,7 +23,6 @@ def inference(img):
     if img.shape[2] == 4:
         img = skimage.color.rgba2rgb(img)
     height, width = img.shape[:2]
-    IMAGE_SIZE = 28
     img = rescale(img, (IMAGE_SIZE / height,
                         IMAGE_SIZE / width), mode='constant')
     im = img.astype(np.float32).reshape(1, IMAGE_SIZE, IMAGE_SIZE, 3)
@@ -39,7 +41,7 @@ def main():
         recog, img = inference(img)
         plt.subplot(4, 10, i + 1)
         plt.title(labels[recog], size=12, color='k' if i == recog else 'r')
-        plt.axis([0, 28, 28, 0])
+        plt.axis([0, IMAGE_SIZE, IMAGE_SIZE, 0])
         plt.imshow(img)
         plt.tick_params(labelbottom='off')
         plt.tick_params(labelleft='off')

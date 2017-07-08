@@ -19,7 +19,7 @@ def load_data(dirname, filename):
     with open(os.path.join(dirname, filename), encoding='utf-8') as f:
         lines = f.readlines()
 
-    IMAGE_SIZE = 28
+    IMAGE_SIZE = 48
     IN_CHANNELS = 3
     count = len(lines)
     xs = np.zeros((count, IN_CHANNELS, IMAGE_SIZE,
