@@ -4,13 +4,13 @@ import chainer.links as L
 
 
 class CNN(chainer.Chain):
-    CLASSES = 36
+    CLASSES = 3
 
     def __init__(self, train=True):
         super(CNN, self).__init__(
             conv1=L.Convolution2D(3, 32, 5),
             conv2=L.Convolution2D(32, 64, 5),
-            l1=L.Linear(5184, CNN.CLASSES)
+            l1=L.Linear(10816, CNN.CLASSES)
         )
         self.train = train
 

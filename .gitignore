@@ -37,3 +37,4 @@ result/
 __pycache__/
 .vscode/
 *.npz
+*.jpg
